@@ -3,87 +3,95 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { getSocket } from "../socket/socket.client";
 
-
 export const useMatchStore = create((set) => ({
-    matches:[],
-    isLoadingMyMathes: false,
-    isLoadingUserProfiles: false,
-    userProfiles: [],
-    swipeFeedback: null,
+  matches: [],
+  isLoadingMyMathes: false,
+  isLoadingUserProfiles: false,
+  userProfiles: [],
+  swipeFeedback: null,
 
-    getMyMatches: async () => {
-        try {
-            set({ isLoadingMyMathes: true });
-            const res = await axiosInstance.get("/matches")
-            set({ matches: res.data.matches });
-        } catch (error) {
-            set({ matches: [] });
-            toast.error(error.response.data.message || "Something went wrong");
-        }
-        finally{
-            set({ isLoadingMyMathes: false });
-        }
-    },
+  getMyMatches: async () => {
+    try {
+      set({ isLoadingMyMathes: true });
+      const res = await axiosInstance.get("/matches");
+      set({ matches: res.data.matches });
+    } catch (error) {
+      set({ matches: [] });
+      toast.error(error.response.data.message || "Something went wrong");
+    } finally {
+      set({ isLoadingMyMathes: false });
+    }
+  },
 
-    getUserProfiles: async () => {
-        try {
-            set({ isLoadingUserProfiles: true });
-            const res = await axiosInstance.get("/matches/user-profiles")
-            set({ userProfiles: res.data.users });
-        } catch (error) {
-            set({ userProfiles: [] });
-            toast.error(error.response.data.message || "Something went wrong");
-        }
-        finally{
-            set({ isLoadingUserProfiles: false });
-        }
-    },
+  getUserProfiles: async () => {
+    try {
+      set({ isLoadingUserProfiles: true });
+      const res = await axiosInstance.get("/matches/user-profiles");
+      set({ userProfiles: res.data.users });
+    } catch (error) {
+      set({ userProfiles: [] });
+      toast.error(error.response.data.message || "Something went wrong");
+    } finally {
+      set({ isLoadingUserProfiles: false });
+    }
+  },
 
-    swipeLeft: async (user) => {
-		try {
-			set({ swipeFeedback: "passed" });
-			await axiosInstance.post("/matches/swipe-left/" + user._id);
-		} catch (error) {
-			console.log(error);
-			toast.error("Failed to swipe left");
-		} finally {
-			setTimeout(() => set({ swipeFeedback: null }), 1500);
-		}
-	},
-    
-	swipeRight: async (user) => {
-		try {
-			set({ swipeFeedback: "liked" });
-			await axiosInstance.post("/matches/swipe-right/" + user._id);
-		} catch (error) {
-			console.log(error);
-			toast.error("Failed to swipe right");
-		} finally {
-			setTimeout(() => set({ swipeFeedback: null }), 1500);
-		}
-	},
+  swipeLeft: async (user) => {
+    try {
+      set({ swipeFeedback: "passed" });
+      await axiosInstance.post("/matches/swipe-left/" + user._id);
 
-    subscribeToNewMatches: () => {
-        try {
-            const socket = getSocket();
+      set((state) => ({
+        userProfiles: state.userProfiles.filter(
+          (profile) => profile._id !== user._id
+        ),
+      }));
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to swipe left");
+    } finally {
+      setTimeout(() => set({ swipeFeedback: null }), 1500);
+    }
+  },
 
-            socket.on("newMatch", (newMatch) => {
-                set(state => ({
-                    matches: [...state.matches, newMatch],
-                }))
-                toast.success("You got a new match!");
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    },
+  swipeRight: async (user) => {
+    try {
+      set({ swipeFeedback: "liked" });
+      await axiosInstance.post("/matches/swipe-right/" + user._id);
+      set((state) => ({
+        userProfiles: state.userProfiles.filter(
+          (profile) => profile._id !== user._id
+        ),
+      }));
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to swipe right");
+    } finally {
+      setTimeout(() => set({ swipeFeedback: null }), 1500);
+    }
+  },
 
-    unsubscribeFromNewMatches: () => {
-		try {
-			const socket = getSocket();
-			socket.off("newMatch");
-		} catch (error) {
-			console.error(error);
-		}
-	},
-}))
+  subscribeToNewMatches: () => {
+    try {
+      const socket = getSocket();
+
+      socket.on("newMatch", (newMatch) => {
+        set((state) => ({
+          matches: [...state.matches, newMatch],
+        }));
+        toast.success("You got a new match!");
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  unsubscribeFromNewMatches: () => {
+    try {
+      const socket = getSocket();
+      socket.off("newMatch");
+    } catch (error) {
+      console.error(error);
+    }
+  },
+}));
