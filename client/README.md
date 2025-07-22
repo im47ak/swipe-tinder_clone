@@ -1,12 +1,26 @@
-# React + Vite
+# CampusVerse - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based social app for college students, built with modern web technologies.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 18** - UI Framework
+- **Vite** - Build tool and dev server
+- **TailwindCSS & DaisyUI** - Styling
+- **Zustand** - State management
+- **React Router DOM** - Navigation
+- **Socket.io Client** - Real-time messaging
+- **@react-oauth/google** - Google OAuth integration
+- **React Tinder Card** - Swipe interactions
 
-## Expanding the ESLint configuration
+## Features
+
+- ✅ Google OAuth login (@cmrit.ac.in emails only)
+- ✅ Profile creation and management
+- ✅ Real-time matching system
+- ✅ Chat with matches
+- ✅ Real-time message notifications
+- ✅ Auto-scroll in chat
+- ✅ Unread message counts
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

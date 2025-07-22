@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Header } from "../components/Header";
 import { useAuthStore } from "../store/useAuthStore";
 import { useMatchStore } from "../store/useMatchStore";
@@ -9,24 +9,35 @@ import MessageInput from "../components/MessageInput";
 
 const ChatPage = () => {
 	const { getMyMatches, matches, isLoadingMyMatches } = useMatchStore();
-	const { messages, getMessages, subscribeToMessages, unsubscribeFromMessages } = useMessageStore();
+	const { messages, getMessages, getUnreadCounts, clearCurrentChat } = useMessageStore();
 	const { authUser } = useAuthStore();
+	const messagesEndRef = useRef(null);
 
 	const { id } = useParams();
 
 	const match = matches.find((m) => m?._id === id);
 
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages]);
+
 	useEffect(() => {
 		if (authUser && id) {
 			getMyMatches();
 			getMessages(id);
-			subscribeToMessages();
+			// Also refresh unread counts when entering chat
+			getUnreadCounts();
 		}
 
+		// Clear current chat when component unmounts or id changes
 		return () => {
-			unsubscribeFromMessages();
+			clearCurrentChat();
 		};
-	}, [getMyMatches, authUser, getMessages, subscribeToMessages, unsubscribeFromMessages, id]);
+	}, [getMyMatches, authUser, getMessages, getUnreadCounts, clearCurrentChat, id]);
 
 	if (isLoadingMyMatches) return <LoadingMessagesUI />;
 	if (!match) return <MatchNotFound />;
@@ -65,6 +76,7 @@ const ChatPage = () => {
 							</div>
 						))
 					)}
+					<div ref={messagesEndRef} />
 				</div>
 				<MessageInput match={match} />
 			</div>

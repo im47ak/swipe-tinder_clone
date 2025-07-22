@@ -28,7 +28,7 @@ export const Header = () => {
             <Link to="/" className="flex items-center space-x-2">
               <Flame className="w-8 h-8 text-white" />
               <span className="text-2xl font-bold text-white hidden sm:inline">
-                Swipe
+                CampusVerse
               </span>
             </Link>
           </div>
@@ -91,7 +91,7 @@ export const Header = () => {
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-white focus:otline-none"
+              className="text-white focus:outline-none"
             >
               <Menu className="size-6" />
             </button>

@@ -16,7 +16,8 @@ export const initializeSocket = (userId) => {
 
 export const getSocket = () => {
     if (!socket) {
-        throw new Error("Socket not initialized");
+        console.warn("Socket not initialized");
+        return null;
     }
     return socket;
 }

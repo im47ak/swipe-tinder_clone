@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
+import GoogleSignInButton from "./GoogleSignInButton";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -8,13 +9,27 @@ const LoginForm = () => {
   const { login, loading } = useAuthStore();
 
   return (
-    <form
-      className="space-y-6"
-      onSubmit={(e) => {
-        e.preventDefault();
-        login({ email, password });
-      }}
-    >    
+    <div className="space-y-6">
+      {/* Google Sign-In Button */}
+      <GoogleSignInButton />
+      
+      {/* OR Divider */}
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+        </div>
+      </div>
+
+      <form
+        className="space-y-6"
+        onSubmit={(e) => {
+          e.preventDefault();
+          login({ email, password });
+        }}
+      >    
       <div>
         <label
           htmlFor="email"
@@ -67,7 +82,8 @@ const LoginForm = () => {
       >
         {loading ? "Signing in..." : "Sign in"}
       </button>
-    </form>
+      </form>
+    </div>
   );
 };
 

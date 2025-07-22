@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { X, Loader, Heart, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useMatchStore } from "../store/useMatchStore";
-import { get } from "mongoose";
+import { useMessageStore } from "../store/useMessageStore";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,10 +10,12 @@ const Sidebar = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   const {getMyMatches, matches, isLoadingMyMatches} = useMatchStore(); 
+  const {getUnreadCounts, unreadCounts} = useMessageStore();
 
     useEffect(() => {
         getMyMatches();
-    }, [getMyMatches]);
+        getUnreadCounts();
+    }, [getMyMatches, getUnreadCounts]);
     
   return (
     <>
@@ -44,16 +46,22 @@ const Sidebar = () => {
             ) : (
               matches.map((match) => (
                 <Link key={match._id} to={`/chat/${match._id}`}>
-                  <div className="flex items-center mb-4 cursor-pointer hover:bg-pink-50 p-2 rounded-lg transition-colors duration-300">
+                  <div className="flex items-center mb-4 cursor-pointer hover:bg-pink-50 p-2 rounded-lg transition-colors duration-300 relative">
                     <img
                       src={match.image || "/avatar.png"}
                       alt="User avatar"
                       className="size-12 object-cover rounded-full mr-3 border-2 border-pink-300"
                     />
 
-                    <h3 className="font-semibold text-gray-800">
+                    <h3 className="font-semibold text-gray-800 flex-1">
                       {match.name}
                     </h3>
+                    
+                    {unreadCounts[match._id] && (
+                      <div className="bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center ml-2">
+                        {unreadCounts[match._id] > 99 ? "99+" : unreadCounts[match._id]}
+                      </div>
+                    )}
                   </div>
                 </Link>
               ))

@@ -1,4 +1,3 @@
-import { get } from "mongoose";
 import User from "../models/User.js";
 import { getConnectedUsers, getIO } from "../socket/socket.server.js";
 

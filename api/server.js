@@ -27,7 +27,7 @@ initializeSocket(httpServer);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: process.env.CLIENT_URL, // fixing the cors issue
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
 }));
 
@@ -45,6 +45,7 @@ if(process.env.NODE_ENV === "production") {
 }
 
 httpServer.listen(PORT, () => {
-    console.log("Server started at this port: " + PORT)
-    connectDB()
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📱 Environment: ${process.env.NODE_ENV}`);
+    connectDB();
 });

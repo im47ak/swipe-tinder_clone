@@ -2,9 +2,11 @@ import { useRef, useState } from "react";
 import { Header } from "../components/Header";
 import { useAuthStore } from "../store/useAuthStore";
 import { useUserStore } from "../store/useUserStore";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const { authUser } = useAuthStore();
+  const navigate = useNavigate();
   const [name, setName] = useState(authUser.name || "");
   const [bio, setBio] = useState(authUser.bio || "");
   const [age, setAge] = useState(authUser.age || "");
@@ -18,9 +20,10 @@ const ProfilePage = () => {
 
   const { loading, updateProfile } = useUserStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateProfile({ name, bio, age, gender, genderPreference, image });
+    await updateProfile({ name, bio, age, gender, genderPreference, image });
+    navigate("/"); // Redirect to home page after saving
   };
 
   const handleImageChange = (e) => {
@@ -34,8 +37,6 @@ const ProfilePage = () => {
       reader.readAsDataURL(file);
     }
   };
-
-  console.log(image);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

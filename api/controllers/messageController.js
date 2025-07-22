@@ -44,12 +44,48 @@ export const getConversation = async (req, res) => {
 			],
 		}).sort("createdAt");
 
+		// Mark messages as read when user opens the conversation
+		await Message.updateMany(
+			{ sender: userId, receiver: req.user._id, read: false },
+			{ read: true }
+		);
+
 		res.status(200).json({
 			success: true,
 			messages,
 		});
 	} catch (error) {
 		console.log("Error in getConversation: ", error);
+		res.status(500).json({
+			success: false,
+			message: "Internal server error",
+		});
+	}
+};
+
+export const getUnreadCounts = async (req, res) => {
+	try {
+		const unreadCounts = await Message.aggregate([
+			{
+				$match: {
+					receiver: req.user._id,
+					read: false,
+				},
+			},
+			{
+				$group: {
+					_id: "$sender",
+					count: { $sum: 1 },
+				},
+			},
+		]);
+
+		res.status(200).json({
+			success: true,
+			unreadCounts,
+		});
+	} catch (error) {
+		console.log("Error in getUnreadCounts: ", error);
 		res.status(500).json({
 			success: false,
 			message: "Internal server error",

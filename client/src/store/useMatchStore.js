@@ -5,21 +5,21 @@ import { getSocket } from "../socket/socket.client";
 
 export const useMatchStore = create((set) => ({
   matches: [],
-  isLoadingMyMathes: false,
+  isLoadingMyMatches: false,
   isLoadingUserProfiles: false,
   userProfiles: [],
   swipeFeedback: null,
 
   getMyMatches: async () => {
     try {
-      set({ isLoadingMyMathes: true });
+      set({ isLoadingMyMatches: true });
       const res = await axiosInstance.get("/matches");
       set({ matches: res.data.matches });
     } catch (error) {
       set({ matches: [] });
       toast.error(error.response.data.message || "Something went wrong");
     } finally {
-      set({ isLoadingMyMathes: false });
+      set({ isLoadingMyMatches: false });
     }
   },
 
@@ -47,8 +47,8 @@ export const useMatchStore = create((set) => ({
         ),
       }));
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to swipe left");
+      console.error("Error in swipe action:", error);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setTimeout(() => set({ swipeFeedback: null }), 1500);
     }
@@ -64,34 +64,29 @@ export const useMatchStore = create((set) => ({
         ),
       }));
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to swipe right");
+      console.error("Error in swipe action:", error);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setTimeout(() => set({ swipeFeedback: null }), 1500);
     }
   },
 
   subscribeToNewMatches: () => {
-    try {
-      const socket = getSocket();
-
+    const socket = getSocket();
+    if (socket) {
       socket.on("newMatch", (newMatch) => {
         set((state) => ({
           matches: [...state.matches, newMatch],
         }));
         toast.success("You got a new match!");
       });
-    } catch (error) {
-      console.log(error);
     }
   },
 
   unsubscribeFromNewMatches: () => {
-    try {
-      const socket = getSocket();
+    const socket = getSocket();
+    if (socket) {
       socket.off("newMatch");
-    } catch (error) {
-      console.error(error);
     }
   },
 }));
