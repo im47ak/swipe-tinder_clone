@@ -1,6 +1,6 @@
 # 🌟 CampusVerse - College Social Platform
 
-**🚀 [LIVE DEMO](https://campusverse.onrender.com)** ⭐ **[GitHub Repository](https://github.com/im47ak/swipe-tinder_clone)**
+**🚀 [LIVE DEMO](https://campusverse.onrender.com)** ⭐ **[GitHub Repository Branch](https://github.com/im47ak/swipe-tinder_clone/tree/feature/gauth)** ⭐ **[GitHub Repository](https://github.com/im47ak/swipe-tinder_clone)**
 
 A modern, full-stack social networking application designed specifically for college students, featuring real-time messaging, smart connections, and seamless Google OAuth integration. Built with **React**, **Node.js**, **MongoDB**, and **Socket.io**.
 
